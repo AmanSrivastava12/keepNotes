@@ -1,13 +1,122 @@
-body {
+@import url("https://fonts.googleapis.com/css2?family=Chakra+Petch&family=Electrolize&family=Marcellus&display=swap");
+* {
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+  padding: 0;
+  box-sizing: border-box;
 }
 
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
+.alerts {
+  color: white;
+  height: 36px;
+  padding-left: 28px;
+  font-size: 15px;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+.alert-box {
+  margin-bottom: 0 !important;
+}
+
+i {
+  cursor: pointer;
+}
+
+textarea {
+  resize: none;
+}
+
+.note-divider {
+  border-top: 1px solid black;
+  color: black;
+  margin: 0;
+}
+
+.note-element {
+  background-color: white;
+  border-radius: 12px;
+}
+.note-element-title {
+  padding: 10px;
+  margin: 0 !important;
+  min-height: 45px;
+  font-weight: bold;
+  text-align: center;
+  border-top-left-radius: 12px;
+  border-top-right-radius: 12px;
+}
+.note-element-content {
+  padding: 8px 10px;
+}
+.note-element-tag {
+  padding: 6px 10px;
+  min-height: 25px;
+}
+.note-element-icons {
+  display: flex;
+  padding: 8px;
+  border-bottom-left-radius: 12px;
+  border-bottom-right-radius: 12px;
+}
+.note-element-icon {
+  width: 25%;
+  text-align: center;
+}
+.note-element-icon-left {
+  border-left: 1.5px solid black;
+  border-right: 1px solid black;
+}
+.note-element-icon-right {
+  border-left: 1px solid black;
+  border-right: 1.5px solid black;
+}
+.container-login {
+  border-radius: 5px;
+  padding: 30px 40px;
+  width: 60%;
+  box-shadow: 0px 2px 5px rgb(192, 144, 1), 0px 2px 5px rgb(200, 171, 4);
+}
+.container-register {
+  border-radius: 5px;
+  padding: 30px 40px 20px 40px;
+  width: 70%;
+}
+.container-account {
+  width: 800px;
+  padding: 30px;
+}
+::placeholder {
+  color: rgb(0, 0, 0) !important;
+  opacity: 1;
+}
+input[type="radio"] {
+  cursor: pointer;
+  width: 50px;
+  height: 50px;
+  border: 2px solid rgb(255, 255, 255);
+  box-shadow: none !important;
+}
+input[type="radio"]:checked {
+  background-blend-mode: darken;
+  border: 2px solid white;
+  animation-name: checkedRadio;
+  animation-duration: 1s;
+}
+input[type="radio"]:checked::after {
+  content: "\2713";
+  color: white;
+  font-size: 26px;
+  padding-left: 13.5px;
+}
+@keyframes checkedRadio {
+  0% {
+    transform: scale(0);
+  }
+  75% {
+    transform: scale(1.1);
+  }
+  100% {
+    transform: scale(1);
+  }
 }
