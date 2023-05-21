@@ -1,6 +1,5 @@
-import React, { useContext, useEffect, useRef, useState } from "react";
+import React, { useContext, useRef, useState } from "react";
 import ContextApi from "../../context/contextApi";
-import { useNavigate } from "react-router-dom";
 import ViewUsers from "./ViewUsers";
 import UpdateUser from "../modals/UpdateUser";
 import Navbar from "../general/Navbar";
@@ -9,14 +8,6 @@ import Alert from "../general/Alert";
 const Admin = () => {
   const state = useContext(ContextApi);
   const refOpenUpdate = useRef(null);
-  const navigate = useNavigate();
-  useEffect(() => {
-    if (localStorage.getItem("token")) {
-      state.viewUsers();
-    } else {
-      navigate("/home");
-    }
-  });
   const [user, setUser] = useState({
     _id: "",
     name: "",
@@ -33,14 +24,19 @@ const Admin = () => {
   return (
     <>
       <UpdateUser user={user} setUser={setUser} ref={refOpenUpdate} />
-      <Navbar path="/user" />
-      <Alert />
+      <div className="sticky-top">
+        <Navbar path="/user" />
+        <Alert />
+      </div>
       <div
         className="pt-3 pb-5"
-        style={{ minHeight: "82.2vh", backgroundColor: state.colors.light }}
+        style={{
+          minHeight: "82.2vh",
+          backgroundImage: `linear-gradient(${state.colors.light},${state.colors.dark})`,
+        }}
       >
         <div
-          className="container container-fluid container-account bg-warning"
+          className="container container-fluid container-account bg-warning container-login border border-1 border-warning"
           style={{
             fontFamily: state.fonts.font3,
           }}

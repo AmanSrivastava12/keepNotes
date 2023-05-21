@@ -7,9 +7,11 @@ import Alert from "./Alert";
 export default function Home() {
   return (
     <>
-      <Navbar path="/home" />
-      <Alert />
-      <AddNote />
+      <div className="sticky-top">
+        <Navbar path="/home" />
+        <Alert />
+        <AddNote />
+      </div>
       <ViewNotes />
     </>
   );

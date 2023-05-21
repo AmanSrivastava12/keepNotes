@@ -9,7 +9,7 @@ const Alert = (props) => {
         className="d-flex"
         style={{
           height: "36px",
-          width: "100vw",
+          width: "100%",
           backgroundColor: state.colors.light,
         }}
       >

@@ -39,14 +39,14 @@ const Account = () => {
       <div
         className="d-flex align-items-center justify-content-center"
         style={{
-          backgroundColor: state.colors.light,
+          backgroundImage: `linear-gradient(${state.colors.light},${state.colors.dark})`,
           height: "88.1vh",
         }}
       >
         <div
-          className="container-account"
+          className="container-account container-login border border-1 border-warning"
           style={{
-            backgroundColor: state.colors.dark,
+            backgroundColor: "white",
             fontFamily: state.fonts.font3,
           }}
         >
