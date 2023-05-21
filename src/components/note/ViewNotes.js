@@ -45,7 +45,7 @@ const ViewNotes = () => {
       <div
         className="p-4"
         style={{
-          backgroundImage: `linear-gradient(#fcd96d,${state.colors.light}, white)`,
+          backgroundImage: `linear-gradient(#fcd96d,${state.colors.light})`,
           minHeight: "70vh",
         }}
       >

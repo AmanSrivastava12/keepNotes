@@ -18,23 +18,26 @@ const Launch = () => {
           backgroundImage: `linear-gradient(${state.colors.light}, white)`,
         }}
       >
-        <div
-          className="w-50"
-          style={{ paddingTop: "100px", paddingLeft: "100px" }}
-        >
-          <h1
-            className="fw-bold text-warning"
-            style={{ fontFamily: state.fonts.font1, fontSize: "50px" }}
-          >
-            KeepNotes
-          </h1>
-          <p className="mt-2">
-            You learn actively when you take notes and you’re processing
-            information. You’re highlighting facts, connecting the dots, and
-            breaking down a big topic into small chunks. There is a lesser
-            chance of missing out on crucial information when you jot it down.
-            Remembering seems less overwhelming!
-          </p>
+        <div className="w-50 d-flex align-items-center justify-content-end">
+          <div>
+            <h1
+              className="fw-bold text-warning"
+              style={{ fontFamily: state.fonts.font1, fontSize: "50px" }}
+            >
+              KeepNotes
+            </h1>
+            <p>
+              You learn actively when you take notes and you’re processing
+              <br />
+              information. You’re highlighting facts, connecting the dots, and
+              <br />
+              breaking down a big topic into small chunks. There is a lesser
+              <br />
+              chance of missing out on crucial information when you jot it
+              <br />
+              down. Remembering seems less overwhelming!
+            </p>
+          </div>
         </div>
         <div className="w-50">
           <Login type="user" />
