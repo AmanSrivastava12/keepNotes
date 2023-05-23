@@ -3,11 +3,22 @@ import React, {
   useContext,
   useState,
   useRef,
+  useEffect,
   useImperativeHandle,
 } from "react";
 import ContextApi from "../../context/contextApi";
+import { useQuill } from "react-quilljs";
+import "quill/dist/quill.snow.css";
 
 const CustomNote = forwardRef((props, ref) => {
+  const { quill, quillRef } = useQuill();
+  useEffect(() => {
+    if (quill) {
+      quill.on("text-change", () => {
+        setInputText(quill.getText());
+      });
+    }
+  }, [quill]);
   const refOpenCustom = useRef(null);
   const state = useContext(ContextApi);
   const [inputText, setInputText] = useState("");
@@ -16,9 +27,6 @@ const CustomNote = forwardRef((props, ref) => {
   }));
   const handleClick = () => {
     refOpenCustom.current.click();
-  };
-  const handleInput = (e) => {
-    setInputText(e.target.value);
   };
   return (
     <>
@@ -55,35 +63,30 @@ const CustomNote = forwardRef((props, ref) => {
               </h1>
             </div>
             <div className="modal-body">
-              <form>
-                <div className="mb-3">
-                  <input
-                    type="text"
-                    className="form-control"
-                    id="title"
-                    placeholder="Title"
-                  />
-                </div>
-                <div className="mb-3">
-                  <textarea
-                    className="form-control"
-                    id="content"
-                    rows="10"
-                    placeholder="Start typing here..."
-                    value={inputText}
-                    onChange={handleInput}
-                  ></textarea>
-                </div>
-              </form>
+              <div style={{ width: "100%", height: 380 }}>
+                <div ref={quillRef} />
+              </div>
+            </div>
+            <div
+              className="modal-footer d-flex justify-content-between"
+              style={{ backgroundColor: state.colors.dark }}
+            >
               <div className="d-flex">
                 <div className="d-flex align-items-center border border-1 border-dark border-end-0">
                   <button
                     title="Words and Characters"
-                    className="btn border-start border-end rounded-0"
+                    className="btn"
+                    style={{
+                      borderRight: "1px solid black",
+                      borderRadius: "0px",
+                    }}
                   >
                     <i className="fa-solid fa-file-lines"></i>
                   </button>
-                  <div className="mx-2" style={{ width: "204px" }}>
+                  <div
+                    className="mx-2 d-flex justify-content-center"
+                    style={{ width: "220px" }}
+                  >
                     {
                       inputText.split(/\s+/).filter((element) => {
                         return element.length !== 0;
@@ -95,11 +98,18 @@ const CustomNote = forwardRef((props, ref) => {
                 <div className="d-flex align-items-center border border-1 border-dark ">
                   <button
                     title="Time to read"
-                    className="btn border-start border-end rounded-0"
+                    className="btn"
+                    style={{
+                      borderRight: "1px solid black",
+                      borderRadius: "0px",
+                    }}
                   >
                     <i className="fa-solid fa-stopwatch"></i>
                   </button>
-                  <div className="mx-2" style={{ width: "144px" }}>
+                  <div
+                    className="mx-2 d-flex justify-content-center"
+                    style={{ width: "160px" }}
+                  >
                     {parseFloat(
                       0.008 *
                         inputText.split(/\s+/).filter((element) => {
@@ -110,20 +120,17 @@ const CustomNote = forwardRef((props, ref) => {
                   </div>
                 </div>
               </div>
-            </div>
-            <div
-              className="modal-footer d-flex justify-content-between"
-              style={{ backgroundColor: state.colors.dark }}
-            >
-              <button
-                type="button"
-                className="btn-close"
-                data-bs-dismiss="modal"
-                aria-label="Close"
-              ></button>
-              <button type="button" className="btn btn-success">
-                Create Note
-              </button>
+              <div className="d-flex align-items-center">
+                <button
+                  type="button"
+                  className="btn-close me-3"
+                  data-bs-dismiss="modal"
+                  aria-label="Close"
+                ></button>
+                <button type="button" className="btn btn-success">
+                  Create Note
+                </button>
+              </div>
             </div>
           </div>
         </div>
