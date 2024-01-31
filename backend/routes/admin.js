@@ -41,6 +41,7 @@ router.put("/updateUsers/:id", fetchuser, async (req, res) => {
       email: req.body.email,
       _id: { $ne: req.params.id },
     });
+    console.log(user);
     if (user) {
       return res
         .status(400)
