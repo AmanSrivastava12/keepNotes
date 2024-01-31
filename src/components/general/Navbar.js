@@ -40,102 +40,113 @@ export default function Navbar(props) {
               className="navbar-nav me-auto mb-2 mb-lg-0"
               style={{ fontFamily: state.fonts.font2 }}
             >
-              <div className="d-flex mx-3">
-                <div
-                  className="text-center py-1 mx-3"
-                  style={{ width: "20px" }}
+              {/* <form className="d-flex mx-3" role="search">
+                <input
+                  className="form-control me-2"
+                  type="search"
+                  placeholder="Search"
+                  aria-label="Search"
+                />
+                <button
+                  className="btn btn-outline-success"
+                  type="submit"
+                  style={{ fontFamily: state.fonts.font2 }}
                 >
-                  {" "}
-                  <Link
-                    className="text-decoration-none text-dark"
-                    role="button"
-                    style={{ fontFamily: state.fonts.font1 }}
-                    to="/note"
-                    onClick={() => {
-                      state.viewNotes();
-                    }}
-                  >
-                    <i
-                      title="Make Notes"
-                      className="fa-regular fa-note-sticky"
-                    ></i>
-                  </Link>
-                </div>
-                <div
-                  className="text-center py-1 mx-3"
-                  style={{ width: "20px" }}
-                >
-                  {" "}
-                  <Link
-                    className="text-decoration-none text-dark"
-                    role="button"
-                    style={{ fontFamily: state.fonts.font1 }}
-                    to="/blog"
-                    onClick={() => {
-                      state.viewBlogs();
-                    }}
-                  >
-                    <i
-                      title="Write Blogs"
-                      className="fa-regular fa-file-lines"
-                    ></i>
-                  </Link>
-                </div>
-              </div>
+                  Search
+                </button>
+              </form> */}
             </div>
-            <div className="d-flex">
-              {email === process.env.REACT_APP_ADMIN_EMAIL ||
-              email === process.env.REACT_APP_MANAGER_EMAIL ? (
-                <div
-                  className="text-center py-1 mx-3"
-                  style={{ width: "20px" }}
+            <div className="btn-group dropstart ps-4">
+              <button
+                className="btn btn-warning"
+                type="button"
+                data-bs-toggle="dropdown"
+              >
+                <i className="fa-solid fa-angles-left"></i>
+              </button>
+              {props.path !== "/account" ? (
+                <ul className="dropdown-menu p-0">
+                  <li className="text-center py-1">
+                    {" "}
+                    <Link
+                      className="text-decoration-none text-dark"
+                      role="button"
+                      style={{ fontFamily: state.fonts.font1 }}
+                      to="/account"
+                      onClick={() => {
+                        state.userAccount();
+                      }}
+                    >
+                      My Account
+                    </Link>
+                  </li>
+                  <hr className="dropdown-divider m-0 border-black" />
+                  <li className="text-center py-1">
+                    {" "}
+                    <Link
+                      className="text-decoration-none text-dark"
+                      role="button"
+                      style={{ fontFamily: state.fonts.font1 }}
+                      onClick={() => {
+                        localStorage.clear();
+                      }}
+                      to="/"
+                    >
+                      Logout
+                    </Link>
+                  </li>
+                </ul>
+              ) : (
+                <ul className="dropdown-menu p-0">
+                  <li className="text-center py-1">
+                    {" "}
+                    <Link
+                      className="text-decoration-none text-dark"
+                      role="button"
+                      style={{ fontFamily: state.fonts.font1 }}
+                      onClick={() => {
+                        state.viewNotes();
+                      }}
+                      to="/home"
+                    >
+                      Back to home
+                    </Link>
+                  </li>
+                  <hr className="dropdown-divider m-0 border-black" />
+                  <li className="text-center py-1">
+                    {" "}
+                    <Link
+                      className="text-decoration-none text-dark"
+                      role="button"
+                      style={{ fontFamily: state.fonts.font1 }}
+                      onClick={() => {
+                        localStorage.clear();
+                      }}
+                      to="/"
+                    >
+                      Logout
+                    </Link>
+                  </li>
+                </ul>
+              )}
+            </div>
+            <div className="ms-4 me-2" style={{ width: "30px" }}>
+              {(email === "admin@gmail.com" || email === "manager@gmail.com") &&
+              props.path !== "/user" ? (
+                <Link
+                  className="text-decoration-none text-dark"
+                  role="button"
+                  style={{ fontFamily: state.fonts.font1 }}
+                  to="/users"
+                  onClick={() => {
+                    state.viewUsers();
+                  }}
                 >
-                  <Link
-                    className="text-decoration-none text-dark"
-                    role="button"
-                    style={{ fontFamily: state.fonts.font1 }}
-                    to="/users"
-                    onClick={() => {
-                      state.viewUsers();
-                    }}
-                  >
-                    <i title="Edit Users" className="fa-solid fa-users"></i>
-                  </Link>
-                </div>
+                  <i className="fa-solid fa-users"></i>
+                </Link>
               ) : (
                 <div></div>
               )}
-              <div className="text-center py-1 mx-3" style={{ width: "20px" }}>
-                {" "}
-                <Link
-                  className="text-decoration-none text-dark"
-                  role="button"
-                  style={{ fontFamily: state.fonts.font1 }}
-                  to="/account"
-                  onClick={() => {
-                    state.userAccount();
-                  }}
-                >
-                  <i title="My Profile" className="fa-solid fa-user"></i>
-                </Link>
-              </div>
-              <div className="text-center py-1 mx-3" style={{ width: "20px" }}>
-                {" "}
-                <Link
-                  className="text-decoration-none text-dark"
-                  role="button"
-                  style={{ fontFamily: state.fonts.font1 }}
-                  onClick={() => {
-                    localStorage.clear();
-                  }}
-                  to="/"
-                >
-                  <i
-                    title="Logout"
-                    className="fa-solid fa-arrow-right-from-bracket"
-                  ></i>
-                </Link>
-              </div>
             </div>
           </div>
         </div>

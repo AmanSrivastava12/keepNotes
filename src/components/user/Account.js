@@ -1,21 +1,10 @@
-import React, { useRef, useContext, useState } from "react";
+import React, { useContext } from "react";
 import ContextApi from "../../context/contextApi";
-import UpdateUser from "../modals/UpdateUser";
 import Navbar from "../general/Navbar";
-import Alert from "../general/Alert";
-
+//Done
 const Account = () => {
   const state = useContext(ContextApi);
-  const refOpenUpdate = useRef(null);
   const dateobj = state.currentUser.date;
-  const [user, setUser] = useState({
-    _id: "",
-    name: "",
-    age: "",
-    gender: "",
-    contact: "",
-    email: "",
-  });
   let date = {};
   if (dateobj) {
     let dateStr = dateobj.toString();
@@ -43,20 +32,15 @@ const Account = () => {
   if (date.minute && date.minute < 10) {
     date.minute = "0" + date.minute;
   }
-  const updateUser = (currentuser) => {
-    refOpenUpdate.current.handleClick();
-    setUser(currentuser);
-  };
+
   return (
     <>
-      <UpdateUser user={user} setUser={setUser} ref={refOpenUpdate} />
       <Navbar path="/account" />
-      <Alert />
       <div
         className="d-flex align-items-center justify-content-center"
         style={{
           backgroundImage: `linear-gradient(${state.colors.light},${state.colors.dark})`,
-          height: "82vh",
+          height: "88.1vh",
         }}
       >
         <div
@@ -134,18 +118,6 @@ const Account = () => {
             </div>
           </div>
         </div>
-      </div>
-      <div className="d-flex justify-content-center">
-        <button
-          className="btn position-fixed bottom-0 newBlogBtn rounded-pill mb-3 me-3 p-3 fw-bold"
-          onClick={() => {
-            updateUser(state.currentUser);
-          }}
-          style={{ backgroundColor: "#fcce42" }}
-        >
-          <span className="p-2">Edit Profile</span>
-          <i className="fa-solid fa-pen p-2"></i>
-        </button>
       </div>
     </>
   );

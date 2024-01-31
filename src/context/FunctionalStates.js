@@ -3,12 +3,10 @@ import ContextApi from "./contextApi";
 
 const FunctionalStates = (props) => {
   const [notes, setNotes] = useState([]);
-  const [blogs, setBlogs] = useState([]);
-  const [oneBlog, setOneBlog] = useState([]);
   const [users, setUsers] = useState([]);
   const [currentUser, setCurrentUser] = useState("");
   const [alert, setAlert] = useState(null);
-  const host = `${process.env.REACT_APP_BACKEND_HOST}/api`;
+  const host = "http://localhost:5000/api";
   let colors = { dark: "#fff28f", light: "#fcf9dc" };
   let fonts = {
     font1: "'Electrolize', sans-serif",
@@ -88,7 +86,7 @@ const FunctionalStates = (props) => {
 
   const sendNotes = async (title, items, tag) => {
     let email = localStorage.getItem("userEmail");
-    const response = await fetch(`${host}/mail/sendNotes`, {
+    const response = await fetch(`${host}/mail`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -100,23 +98,6 @@ const FunctionalStates = (props) => {
     if (json.success) {
       showAlert("success", "Note has been sent to the email successfully");
     }
-  };
-
-  const sendPassResetRequest = async (email, link, name) => {
-    const response = await fetch(`${host}/mail/sendPassResetRequest`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ email, link, name }),
-    });
-    const json = await response.json();
-    if (json.success) {
-      showAlert("success", "Password Reset Request sent successfully");
-    } else {
-      console.log(json.error);
-    }
-    return json.expiry;
   };
 
   const userRegister = async (name, age, gender, contact, email, password) => {
@@ -159,7 +140,7 @@ const FunctionalStates = (props) => {
   };
 
   const userAccount = async () => {
-    const response = await fetch(`${host}/user/myAccount`, {
+    const response = await fetch(`${host}/user/myaccount`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -172,20 +153,6 @@ const FunctionalStates = (props) => {
     } else {
       showAlert("danger", json.error);
     }
-  };
-
-  const verifyUser = async (email) => {
-    const response = await fetch(`${host}/user/verifyUser`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        email: email,
-      }),
-    });
-    const json = await response.json();
-    return json;
   };
 
   const viewUsers = async () => {
@@ -211,7 +178,7 @@ const FunctionalStates = (props) => {
     });
     let newUser = JSON.parse(JSON.stringify(users));
     for (let index = 0; index < email.length; index++) {
-      if (users[index]._id && users[index]._id === id) {
+      if (users[index]._id === id) {
         newUser[index].name = name;
         newUser[index].age = age;
         newUser[index].gender = gender;
@@ -222,21 +189,6 @@ const FunctionalStates = (props) => {
     }
     setUsers(newUser);
     showAlert("success", "User updated successfully");
-  };
-
-  const updateUserPassword = async (id, password) => {
-    const response = await fetch(`${host}/user/resetPass`, {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        id: id,
-        password: password,
-      }),
-    });
-    const json = await response.json();
-    return json;
   };
 
   const deleteUsers = async (id) => {
@@ -250,78 +202,6 @@ const FunctionalStates = (props) => {
     setUsers(users.filter((user) => user._id !== id));
     setNotes(notes.filter((note) => note.user !== id));
     showAlert("success", "User deleted successfully");
-  };
-
-  const createBlogs = async (title, items, ttr) => {
-    const response = await fetch(`${host}/blog/createBlog`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "auth-token": localStorage.getItem("token"),
-      },
-      body: JSON.stringify({ title, items, ttr }),
-    });
-    const json = await response.json();
-    const blog = json;
-    setBlogs(blogs.concat(blog));
-    showAlert("success", "Blog saved successfully");
-  };
-
-  const viewBlogs = async () => {
-    const response = await fetch(`${host}/blog/viewBlogs`, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        "auth-token": localStorage.getItem("token"),
-      },
-    });
-    const allBlogs = await response.json();
-    setBlogs(allBlogs);
-  };
-
-  const viewOneBlog = async (id) => {
-    const response = await fetch(`${host}/blog/viewOneBlog/${id}`, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        "auth-token": localStorage.getItem("token"),
-      },
-    });
-    const fetchedBlog = await response.json();
-    setOneBlog(fetchedBlog);
-  };
-
-  const updateBlogs = async (id, title, items) => {
-    await fetch(`${host}/blog/updateBlogs/${id}`, {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-        "auth-token": localStorage.getItem("token"),
-      },
-      body: JSON.stringify({ title, items }),
-    });
-    let newBlogs = JSON.parse(JSON.stringify(blogs));
-    for (let index = 0; index < items.length; index++) {
-      if (blogs[index]._id === id) {
-        newBlogs[index].title = title;
-        newBlogs[index].items = items;
-        break;
-      }
-    }
-    setNotes(newBlogs);
-    showAlert("success", "Blog updated successfully");
-  };
-
-  const deleteBlogs = async (id) => {
-    await fetch(`${host}/blog/deleteBlogs/${id}`, {
-      method: "DELETE",
-      headers: {
-        "Content-Type": "application/json",
-        "auth-token": localStorage.getItem("token"),
-      },
-    });
-    setNotes(blogs.filter((blog) => blog._id !== id));
-    showAlert("success", "Blog deleted successfully");
   };
 
   const showAlert = (type, message) => {
@@ -342,11 +222,9 @@ const FunctionalStates = (props) => {
         deleteNotes,
         updateNotes,
         sendNotes,
-        sendPassResetRequest,
         users,
         viewUsers,
         updateUsers,
-        updateUserPassword,
         deleteUsers,
         alert,
         showAlert,
@@ -354,14 +232,6 @@ const FunctionalStates = (props) => {
         userRegister,
         userLogin,
         userAccount,
-        verifyUser,
-        blogs,
-        oneBlog,
-        createBlogs,
-        viewBlogs,
-        viewOneBlog,
-        updateBlogs,
-        deleteBlogs,
       }}
     >
       {props.children}

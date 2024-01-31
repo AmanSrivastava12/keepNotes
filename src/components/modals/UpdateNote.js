@@ -37,7 +37,7 @@ const UpdateNote = forwardRef((props, ref) => {
     }
   };
   return (
-    <>
+    <div>
       <div>
         <button
           ref={refOpenUpdate}
@@ -140,7 +140,7 @@ const UpdateNote = forwardRef((props, ref) => {
           </div>
         </div>
       </div>
-    </>
+    </div>
   );
 });
 

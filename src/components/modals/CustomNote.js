@@ -3,59 +3,30 @@ import React, {
   useContext,
   useState,
   useRef,
+  useEffect,
   useImperativeHandle,
 } from "react";
 import ContextApi from "../../context/contextApi";
+import { useQuill } from "react-quilljs";
+import "quill/dist/quill.snow.css";
 
 const CustomNote = forwardRef((props, ref) => {
+  const { quill, quillRef } = useQuill();
+  useEffect(() => {
+    if (quill) {
+      quill.on("text-change", () => {
+        setInputText(quill.getText());
+      });
+    }
+  }, [quill]);
   const refOpenCustom = useRef(null);
-  const refCloseCustom = useRef(null);
   const state = useContext(ContextApi);
-  const [titleVal, setTitleVal] = useState("");
-  const [itemsVal, setItemsVal] = useState("");
-  const [rowNum, setRowNum] = useState(16);
+  const [inputText, setInputText] = useState("");
   useImperativeHandle(ref, () => ({
     handleClick,
   }));
   const handleClick = () => {
     refOpenCustom.current.click();
-  };
-  const clearText = () => {
-    setTitleVal("");
-    setItemsVal("");
-  };
-  const handleCreate = () => {
-    refCloseCustom.current.click();
-    if (titleVal === "") {
-      state.createBlogs("No title", itemsVal, readTime);
-    } else {
-      state.createBlogs(titleVal, itemsVal, readTime);
-    }
-    clearText();
-  };
-  const changeTitleVal = (e) => {
-    setTitleVal(e.target.value);
-  };
-  const changeItemsVal = (e) => {
-    setItemsVal(e.target.value);
-  };
-  let readTime = parseFloat(
-    0.008 *
-      itemsVal.split(/\s+/).filter((element) => {
-        return element.length !== 0;
-      }).length
-  ).toFixed(3);
-  const changeSize = (e) => {
-    if (e.target.offsetHeight < e.target.scrollHeight) {
-      setRowNum(rowNum + 1);
-    }
-  };
-  const countCharacters = (text) => {
-    const spaceRegex = / /g;
-    const matches = text.match(spaceRegex);
-    const charlen = text.length;
-    if (matches != null) return charlen - matches.length;
-    else return charlen;
   };
   return (
     <>
@@ -84,54 +55,16 @@ const CustomNote = forwardRef((props, ref) => {
               style={{ backgroundColor: state.colors.dark }}
             >
               <h1
-                className="modal-title fs-5 px-2"
+                className="modal-title fs-5"
                 id="staticBackdropLabel"
                 style={{ fontFamily: state.fonts.font2 }}
               >
-                <input
-                  type="text"
-                  value={titleVal}
-                  placeholder="Write something"
-                  onChange={(e) => {
-                    changeTitleVal(e);
-                  }}
-                  style={{
-                    background: "none",
-                    border: "none",
-                    outline: "none",
-                  }}
-                />
+                Custom Note
               </h1>
-              <button
-                type="button"
-                className="btn-close me-1"
-                data-bs-dismiss="modal"
-                aria-label="Close"
-                ref={refCloseCustom}
-                onClick={() => {
-                  clearText();
-                }}
-              ></button>
             </div>
             <div className="modal-body">
-              <div style={{ width: "100%", height: "376px" }}>
-                <textarea
-                  rows={rowNum}
-                  value={itemsVal}
-                  id="items"
-                  onChange={(e) => {
-                    changeSize(e);
-                    changeItemsVal(e);
-                  }}
-                  placeholder="Enter contents of the blog (100 characters minimum)"
-                  minLength={10}
-                  style={{
-                    padding: "10px",
-                    width: "100%",
-                    height: "100%",
-                  }}
-                  required
-                ></textarea>
+              <div style={{ width: "100%", height: 380 }}>
+                <div ref={quillRef} />
               </div>
             </div>
             <div
@@ -155,11 +88,11 @@ const CustomNote = forwardRef((props, ref) => {
                     style={{ width: "220px" }}
                   >
                     {
-                      itemsVal.split(/\s+/).filter((element) => {
+                      inputText.split(/\s+/).filter((element) => {
                         return element.length !== 0;
                       }).length
                     }{" "}
-                    words, {countCharacters(itemsVal)} characters
+                    words, {inputText.length} characters
                   </div>
                 </div>
                 <div className="d-flex align-items-center border border-1 border-dark ">
@@ -177,20 +110,25 @@ const CustomNote = forwardRef((props, ref) => {
                     className="mx-2 d-flex justify-content-center"
                     style={{ width: "160px" }}
                   >
-                    {readTime} Minutes read
+                    {parseFloat(
+                      0.008 *
+                        inputText.split(/\s+/).filter((element) => {
+                          return element.length !== 0;
+                        }).length
+                    ).toFixed(3)}{" "}
+                    Minutes read
                   </div>
                 </div>
               </div>
               <div className="d-flex align-items-center">
                 <button
-                  disabled={countCharacters(itemsVal) < 100}
                   type="button"
-                  className="btn btn-success"
-                  onClick={() => {
-                    handleCreate();
-                  }}
-                >
-                  Create
+                  className="btn-close me-3"
+                  data-bs-dismiss="modal"
+                  aria-label="Close"
+                ></button>
+                <button type="button" className="btn btn-success">
+                  Create Note
                 </button>
               </div>
             </div>
