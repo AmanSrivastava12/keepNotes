@@ -1,5 +1,6 @@
+require("dotenv").config();
 const mongoose = require("mongoose");
-const mongoURI = "mongodb://localhost:27017/KeepNotes";
+const mongoURI = process.env.MONGO_URI;
 
 const connecttoMongoDB = () => {
   mongoose
