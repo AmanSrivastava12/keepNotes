@@ -20,6 +20,17 @@ const Admin = () => {
     refOpenUpdate.current.handleClick();
     setUser(currentUser);
   };
+  const handleClickDelete = (currentUser) => {
+    let userEmail = prompt(
+      "Please enter the email of the user to delete it",
+      ""
+    );
+    if (userEmail === currentUser.email) {
+      state.deleteUsers(currentUser._id);
+      state.viewUsers();
+    }
+    setUser(currentUser);
+  };
 
   return (
     <>
@@ -50,7 +61,12 @@ const Admin = () => {
             </div>
             {state.users.map((user) => {
               return (
-                <ViewUsers user={user} key={user._id} updateUser={updateUser} />
+                <ViewUsers
+                  user={user}
+                  key={user._id}
+                  updateUser={updateUser}
+                  handleClickDelete={handleClickDelete}
+                />
               );
             })}
           </div>

@@ -85,7 +85,7 @@ const Login = (props) => {
                     <Link
                       className="text-decoration-none text-dark"
                       style={{ fontSize: "12px" }}
-                      to=""
+                      to="/forgotPassword"
                     >
                       Forgot Password?
                     </Link>

@@ -1,7 +1,6 @@
 import React, { useContext, useRef, useState } from "react";
 import ContextApi from "../../context/contextApi";
 import NoteItem from "./NoteItem";
-import CustomNote from "../modals/CustomNote";
 import ChangeColour from "../modals/ChangeColour";
 import UpdateNote from "../modals/UpdateNote";
 
@@ -9,7 +8,6 @@ const ViewNotes = () => {
   const state = useContext(ContextApi);
   const refOpenUpdate = useRef(null);
   const refOpenColour = useRef(null);
-  const refOpenCustom = useRef(null);
   const [rowNum, setRowNum] = useState(1);
   const [note, setNote] = useState({
     _id: "",
@@ -28,9 +26,6 @@ const ViewNotes = () => {
     refOpenColour.current.handleClick();
     setNote(currentNote);
   };
-  const handleClickCustom = () => {
-    refOpenCustom.current.handleClick();
-  };
   return (
     <>
       <UpdateNote
@@ -41,7 +36,6 @@ const ViewNotes = () => {
         setRowNum={setRowNum}
       />
       <ChangeColour note={note} setNote={setNote} ref={refOpenColour} />
-      <CustomNote ref={refOpenCustom} />
       <div
         className="p-4"
         style={{
@@ -49,21 +43,9 @@ const ViewNotes = () => {
           minHeight: "70vh",
         }}
       >
-        <div
-          className="d-flex justify-content-between mb-4"
-          style={{ fontFamily: state.fonts.font1 }}
-        >
-          <h3 className="">Your Existing Notes</h3>
-          <button
-            title="Create a custom note"
-            className="btn btn-warning p-1 pb-0"
-            onClick={() => {
-              handleClickCustom();
-            }}
-          >
-            <i className="fa-solid fa-plus mb-2 px-2"></i>
-          </button>
-        </div>
+        <h3 className="mb-4" style={{ fontFamily: state.fonts.font1 }}>
+          Your Existing Notes
+        </h3>
         <div className="row">
           <div className="ms-2" style={{ fontFamily: state.fonts.font2 }}>
             {state.notes.length === 0 && "No existing notes available."}

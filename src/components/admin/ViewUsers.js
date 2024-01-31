@@ -1,13 +1,8 @@
-import React, { useRef, useState, useContext } from "react";
-import ContextApi from "../../context/contextApi";
-import DeleteUser from "../modals/DeleteUser";
+import React from "react";
 
 const ViewOther = (props) => {
-  const state = useContext(ContextApi);
   let email = localStorage.getItem("userEmail");
   const dateobj = props.user.date;
-  const refOpenDelete = useRef(null);
-  const [delVal, setDelVal] = useState("");
   let date = {};
   if (dateobj) {
     let dateStr = dateobj.toString();
@@ -35,29 +30,9 @@ const ViewOther = (props) => {
   if (date.minute && date.minute < 10) {
     date.minute = "0" + date.minute;
   }
-  const handleClickDelete = () => {
-    refOpenDelete.current.handleClick();
-  };
-  const deleteUserOnClick = () => {
-    if (delVal === props.user.email) {
-      state.deleteUsers(props.user._id);
-    } else {
-      state.showAlert(
-        "warning",
-        "Please type the correct email of the user to delete"
-      );
-    }
-    state.viewUsers();
-  };
 
   return (
     <>
-      <DeleteUser
-        delVal={delVal}
-        setDelVal={setDelVal}
-        ref={refOpenDelete}
-        deleteUserOnClick={deleteUserOnClick}
-      />
       <div className="p-3 mb-1 rounded-3" style={{ backgroundColor: "white" }}>
         <div className="d-flex justify-content-between align-items-center">
           <h5>{props.user.name}</h5>
@@ -74,14 +49,13 @@ const ViewOther = (props) => {
             User since {date.day}/{date.month}/{date.year}, {date.hour}:
             {date.minute}:{date.second} {date.meridian}.
           </div>
-          {email === "admin@gmail.com" ? (
+          {email === process.env.REACT_APP_ADMIN_EMAIL ? (
             <div>
               <i
                 title="Delete user"
                 className="fa-regular fa-trash-can"
                 onClick={() => {
-                  setDelVal("");
-                  handleClickDelete();
+                  props.handleClickDelete(props.user);
                 }}
               ></i>
               <i
