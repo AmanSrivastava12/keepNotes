@@ -19,8 +19,8 @@ const UpdateUser = forwardRef((props, ref) => {
   const handleChange = (e) => {
     props.setUser({ ...props.user, [e.target.id]: e.target.value });
   };
-  const handleUpdateClick = () => {
-    state.updateUsers(
+  const handleUpdateClick = async () => {
+    await state.updateUsers(
       props.user._id,
       props.user.name,
       props.user.age,
@@ -30,6 +30,7 @@ const UpdateUser = forwardRef((props, ref) => {
     );
     refCloseUpdate.current.click();
     state.viewUsers();
+    state.userAccount();
   };
   return (
     <div>
