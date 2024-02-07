@@ -1,15 +1,6 @@
-KeepNotes Website - Perform the following steps after cloning the repository on your device in order to prevent any warnings or errors. This will start the server and the react app concurrently.
+KEEP NOTES :
 
-Run the commands -
-npm init both in the backend folder and the cloned repository
-npm install concurrently
-npm install nodemailer
-npm install react-router-dom
-npm install cors
-npm install nodemon
-and some other commands to install dependencies that might not be present on your device.
-
-Replace the following code in the file under node_modules/react-scripts/config/webpackDevServer.config.js (node_modules of the primary cloned folder) without ejecting it.
+How to setup this on your device - You just need to download this project on your device and open the downloaded files with any text editor(e.g. VS Code). Run the commands 'npm init' and 'npm install' both in the backend folder and the cloned repository. Also replace the following code present in "node_modules/react-scripts/config/webpackDevServer.config.js" - 
 
 onBeforeSetupMiddleware(devServer) {
 devServer.app.use(evalSourceMapMiddleware(devServer));
@@ -22,7 +13,7 @@ devServer.app.use(redirectServedPath(paths.publicUrlOrPath));
 devServer.app.use(noopServiceWorkerMiddleware(paths.publicUrlOrPath));
 },
 
-with the following code -
+with the following code - 
 
 setupMiddlewares: (middlewares, devServer) => {
 if (!devServer) {
@@ -39,6 +30,8 @@ noopServiceWorkerMiddleware(paths.publicUrlOrPath)
 return middlewares;
 },
 
-After this run the npm eject command.
+After that run the command 'npm run allcmds' and now your project is up and running.
 
-Finally, run the command npm run allcmds to successfully run the project on your device.
+Short Summary - It is a website for maintaining and keeping track of your notes and blogs for your own use. The website also offers several features such as sign in, log in, sending some specific notes to your email ID among other things.
+
+Technologies used - HTML, CSS, Bootstrap, React, Express, Node, MongoDB

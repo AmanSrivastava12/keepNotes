@@ -8,7 +8,7 @@ const tokenSchema = new Schema(
       required: true,
       ref: "user",
     },
-    authToken: {
+    key: {
       type: String,
       required: true,
     },

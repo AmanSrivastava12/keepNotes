@@ -41,18 +41,12 @@ const Launch = () => {
         </div>
         <div className="w-50">
           <Login type="user" />
-          <div className="float-end fw-bold" style={{ fontSize: "14px" }}>
-            <Link
-              className="text-decoration-none text-dark me-3"
-              to="/adminlogin"
-            >
-              Admin Login
-            </Link>
+          <div className="float-end fw-bold" style={{ fontSize: "12px" }}>
             <Link
               className="text-decoration-none text-dark me-4"
-              to="/managerlogin"
+              to="/adminlogin"
             >
-              Manager Login
+              Login as an Administrator
             </Link>
           </div>
         </div>

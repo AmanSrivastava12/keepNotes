@@ -7,7 +7,6 @@ import Login from "./components/user/Login";
 import Account from "./components/user/Account";
 import Launch from "./components/general/Launch";
 import Adminlogin from "./components/admin/Adminlogin";
-import Managerlogin from "./components/admin/Managerlogin";
 import Admin from "./components/admin/Admin";
 import Bloghome from "./components/blog/Bloghome";
 import NotesHome from "./components/note/NotesHome";
@@ -28,7 +27,6 @@ function App() {
             <Route exact path="/login" element={<Login />} />
             <Route exact path="/account" element={<Account />} />
             <Route exact path="/adminlogin" element={<Adminlogin />} />
-            <Route exact path="/managerlogin" element={<Managerlogin />} />
             <Route exact path="/users" element={<Admin />} />
             <Route exact path="/blog" element={<Bloghome />} />
             <Route exact path="/blogitem" element={<BlogItem />} />

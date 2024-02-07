@@ -1,21 +1,22 @@
 import React, { useContext, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import ContextApi from "../../context/contextApi";
 import Alert from "../general/Alert";
 
 const Password = () => {
   const state = useContext(ContextApi);
+  const navigate = useNavigate();
   const [credentials, setCredentials] = useState({ email: "" });
   const handleSubmit = async (e) => {
     e.preventDefault();
     let result = await state.verifyUser(credentials.email);
     if (result.success) {
-      let expiryDate = state.sendPassResetRequest(
+      await state.sendPassResetRequest(
         result.email,
         result.resetLink,
         result.name
       );
-      console.log(expiryDate);
+      navigate("/");
     } else {
       state.showAlert("danger", result.error);
     }

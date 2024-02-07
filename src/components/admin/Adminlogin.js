@@ -21,7 +21,7 @@ const Adminlogin = () => {
             width: "60%",
           }}
         >
-          <Login type="admin" />
+          <Login type="administrator" />
         </div>
       </div>
       <Link

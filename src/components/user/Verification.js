@@ -20,16 +20,21 @@ const Verification = () => {
     if (pass === cpass) {
       const pathURL = location.search;
       const arrURL = pathURL.split("&");
-      const id = arrURL[1].substring(3);
-      let result = await state.updateUserPassword(id, pass);
-      if (result.success) {
-        state.showAlert("success", "Password changed successfully");
-        navigate("/");
+      const resetKey = arrURL[0] ? arrURL[0].substring(5) : null;
+      const id = arrURL[1] ? arrURL[1].substring(3) : null;
+      if (resetKey !== null && id !== null) {
+        let result = await state.updateUserPassword(resetKey, id, pass);
+        if (result.success) {
+          state.showAlert("success", "Password changed successfully");
+          navigate("/");
+        } else {
+          state.showAlert(
+            "danger",
+            `${result.error || result.errors[0].msg}. Please try again`
+          );
+        }
       } else {
-        state.showAlert(
-          "danger",
-          `${result.error || result.errors[0].msg}. Please try again`
-        );
+        state.showAlert("danger", "Invalid User");
       }
       setPass("");
       setCpass("");
@@ -92,15 +97,6 @@ const Verification = () => {
                 >
                   Reset Password
                 </button>
-                <div className="mt-2">
-                  <Link
-                    className="text-decoration-none text-dark"
-                    style={{ fontSize: "14px" }}
-                    //   to="/forgotPassword"
-                  >
-                    Send Password Reset Link in <span></span>
-                  </Link>
-                </div>
               </div>
             </form>
           </div>
