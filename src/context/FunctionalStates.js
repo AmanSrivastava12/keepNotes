@@ -60,7 +60,7 @@ const FunctionalStates = (props) => {
       body: JSON.stringify({ title, items, tag, colourDark, colourLight }),
     });
     let newNotes = JSON.parse(JSON.stringify(notes));
-    for (let index = 0; index < items.length; index++) {
+    for (let index = 0; index < notes.length; index++) {
       if (notes[index]._id === id) {
         newNotes[index].title = title;
         newNotes[index].items = items;
@@ -102,21 +102,76 @@ const FunctionalStates = (props) => {
     }
   };
 
-  const sendPassResetRequest = async (email, link, name) => {
-    const response = await fetch(`${host}/mail/sendPassResetRequest`, {
+  const createBlogs = async (title, items, ttr) => {
+    const response = await fetch(`${host}/blog/createBlog`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
+        "auth-token": localStorage.getItem("token"),
       },
-      body: JSON.stringify({ email, link, name }),
+      body: JSON.stringify({ title, items, ttr }),
     });
     const json = await response.json();
-    if (json.success) {
-      showAlert("success", "Password Reset Request sent successfully");
-    } else {
-      console.log(json.error);
+    const blog = json;
+    setBlogs(blogs.concat(blog));
+    showAlert("success", "Blog saved successfully");
+  };
+
+  const viewBlogs = async () => {
+    const response = await fetch(`${host}/blog/viewBlogs`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        "auth-token": localStorage.getItem("token"),
+      },
+    });
+    const allBlogs = await response.json();
+    setBlogs(allBlogs);
+  };
+
+  const viewOneBlog = async (id) => {
+    const response = await fetch(`${host}/blog/viewOneBlog/${id}`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        "auth-token": localStorage.getItem("token"),
+      },
+    });
+    const fetchedBlog = await response.json();
+    setOneBlog(fetchedBlog);
+  };
+
+  const updateBlogs = async (id, title, items) => {
+    await fetch(`${host}/blog/updateBlogs/${id}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        "auth-token": localStorage.getItem("token"),
+      },
+      body: JSON.stringify({ title, items }),
+    });
+    let newBlogs = JSON.parse(JSON.stringify(blogs));
+    for (let index = 0; index < blogs.length; index++) {
+      if (blogs[index]._id === id) {
+        newBlogs[index].title = title;
+        newBlogs[index].items = items;
+        break;
+      }
     }
-    return json.expiry;
+    setBlogs(newBlogs);
+    showAlert("success", "Blog updated successfully");
+  };
+
+  const deleteBlogs = async (id) => {
+    await fetch(`${host}/blog/deleteBlogs/${id}`, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+        "auth-token": localStorage.getItem("token"),
+      },
+    });
+    setBlogs(blogs.filter((blog) => blog._id !== id));
+    showAlert("success", "Blog deleted successfully");
   };
 
   const userRegister = async (name, age, gender, contact, email, password) => {
@@ -188,6 +243,41 @@ const FunctionalStates = (props) => {
     return json;
   };
 
+  const sendPassResetRequest = async (email, link, name) => {
+    const response = await fetch(`${host}/mail/sendPassResetRequest`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ email, link, name }),
+    });
+    const json = await response.json();
+    if (json.success) {
+      showAlert(
+        "success",
+        "Password Reset Request sent successfully. Please check your email and reset your password."
+      );
+    } else {
+      console.log(json.error);
+    }
+  };
+
+  const updateUserPassword = async (resetKey, id, password) => {
+    const response = await fetch(`${host}/user/resetPass`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        resetKey: resetKey,
+        id: id,
+        password: password,
+      }),
+    });
+    const json = await response.json();
+    return json;
+  };
+
   const viewUsers = async () => {
     const response = await fetch(`${host}/admin/viewUsers`, {
       method: "GET",
@@ -210,8 +300,8 @@ const FunctionalStates = (props) => {
       body: JSON.stringify({ name, age, gender, contact, email }),
     });
     let newUser = JSON.parse(JSON.stringify(users));
-    for (let index = 0; index < email.length; index++) {
-      if (users[index]._id && users[index]._id === id) {
+    for (let index = 0; index < users.length; index++) {
+      if (users[index]._id === id) {
         newUser[index].name = name;
         newUser[index].age = age;
         newUser[index].gender = gender;
@@ -224,21 +314,6 @@ const FunctionalStates = (props) => {
     showAlert("success", "User updated successfully");
   };
 
-  const updateUserPassword = async (id, password) => {
-    const response = await fetch(`${host}/user/resetPass`, {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        id: id,
-        password: password,
-      }),
-    });
-    const json = await response.json();
-    return json;
-  };
-
   const deleteUsers = async (id) => {
     await fetch(`${host}/admin/deleteUsers/${id}`, {
       method: "DELETE",
@@ -249,79 +324,8 @@ const FunctionalStates = (props) => {
     });
     setUsers(users.filter((user) => user._id !== id));
     setNotes(notes.filter((note) => note.user !== id));
+    setBlogs(blogs.filter((blog) => blog.user !== id));
     showAlert("success", "User deleted successfully");
-  };
-
-  const createBlogs = async (title, items, ttr) => {
-    const response = await fetch(`${host}/blog/createBlog`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "auth-token": localStorage.getItem("token"),
-      },
-      body: JSON.stringify({ title, items, ttr }),
-    });
-    const json = await response.json();
-    const blog = json;
-    setBlogs(blogs.concat(blog));
-    showAlert("success", "Blog saved successfully");
-  };
-
-  const viewBlogs = async () => {
-    const response = await fetch(`${host}/blog/viewBlogs`, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        "auth-token": localStorage.getItem("token"),
-      },
-    });
-    const allBlogs = await response.json();
-    setBlogs(allBlogs);
-  };
-
-  const viewOneBlog = async (id) => {
-    const response = await fetch(`${host}/blog/viewOneBlog/${id}`, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        "auth-token": localStorage.getItem("token"),
-      },
-    });
-    const fetchedBlog = await response.json();
-    setOneBlog(fetchedBlog);
-  };
-
-  const updateBlogs = async (id, title, items) => {
-    await fetch(`${host}/blog/updateBlogs/${id}`, {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-        "auth-token": localStorage.getItem("token"),
-      },
-      body: JSON.stringify({ title, items }),
-    });
-    let newBlogs = JSON.parse(JSON.stringify(blogs));
-    for (let index = 0; index < items.length; index++) {
-      if (blogs[index]._id === id) {
-        newBlogs[index].title = title;
-        newBlogs[index].items = items;
-        break;
-      }
-    }
-    setNotes(newBlogs);
-    showAlert("success", "Blog updated successfully");
-  };
-
-  const deleteBlogs = async (id) => {
-    await fetch(`${host}/blog/deleteBlogs/${id}`, {
-      method: "DELETE",
-      headers: {
-        "Content-Type": "application/json",
-        "auth-token": localStorage.getItem("token"),
-      },
-    });
-    setNotes(blogs.filter((blog) => blog._id !== id));
-    showAlert("success", "Blog deleted successfully");
   };
 
   const showAlert = (type, message) => {

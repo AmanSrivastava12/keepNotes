@@ -91,7 +91,6 @@ const Login = (props) => {
                     </Link>
                   </div>
                   <hr className="note-divider" />
-
                   <div className="text-center mt-3">
                     <Link
                       className="text-decoration-none text-dark text-secondary btn btn-warning"

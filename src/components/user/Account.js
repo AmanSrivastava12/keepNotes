@@ -56,7 +56,7 @@ const Account = () => {
         className="d-flex align-items-center justify-content-center"
         style={{
           backgroundImage: `linear-gradient(${state.colors.light},${state.colors.dark})`,
-          height: "82vh",
+          height: "81.7vh",
         }}
       >
         <div

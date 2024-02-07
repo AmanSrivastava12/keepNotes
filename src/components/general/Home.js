@@ -15,7 +15,7 @@ export default function Home() {
         className="pt-5 px-4"
         style={{
           backgroundImage: `linear-gradient(#fcd96d,${state.colors.light})`,
-          minHeight: "82vh",
+          minHeight: "81.7vh",
           fontFamily: state.fonts.font2,
         }}
       >

@@ -23,7 +23,7 @@ const ViewBlogs = () => {
         className="px-4 pt-4 pb-5"
         style={{
           backgroundImage: `linear-gradient(#fcd96d,${state.colors.light})`,
-          minHeight: "82vh",
+          minHeight: "81.7vh",
         }}
       >
         <h3 className="mb-4" style={{ fontFamily: state.fonts.font1 }}>

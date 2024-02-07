@@ -1,3 +1,4 @@
+require("dotenv").config();
 const express = require("express");
 const router = express.Router();
 const fetchuser = require("../middleware/fetchuser");
@@ -25,18 +26,10 @@ router.put("/updateUsers/:id", fetchuser, async (req, res) => {
   try {
     const { name, age, gender, contact, email } = req.body;
     const newUser = {};
-    if (name) {
-      newUser.name = name;
-    }
-    if (age) {
-      newUser.age = age;
-    }
-    if (gender) {
-      newUser.gender = gender;
-    }
-    if (contact) {
-      newUser.contact = contact;
-    }
+    newUser.name = name ? name : "";
+    newUser.age = age ? age : "";
+    newUser.gender = gender ? gender : "";
+    newUser.contact = contact ? contact : "";
     let user = await User.findOne({
       email: req.body.email,
       _id: { $ne: req.params.id },
@@ -52,7 +45,7 @@ router.put("/updateUsers/:id", fetchuser, async (req, res) => {
     if (!singleUser) {
       return res
         .status(404)
-        .json({ success: false, error: "Updated email already exists" });
+        .json({ success: false, error: "User does not exists" });
     }
     singleUser = await User.findByIdAndUpdate(
       req.params.id,
@@ -67,8 +60,13 @@ router.put("/updateUsers/:id", fetchuser, async (req, res) => {
 
 router.get("/viewUsers", fetchuser, async (req, res) => {
   try {
-    const allUsers = await User.find({ age: { $exists: true } }).select(
+    const users = await User.find({ age: { $exists: true } }).select(
       "-password"
+    );
+    allUsers = users.filter(
+      (user) =>
+        user.email !== process.env.REACT_APP_MANAGER_EMAIL &&
+        user.email !== process.env.REACT_APP_ADMIN_EMAIL
     );
     res.json({ users: allUsers, success: true });
   } catch (error) {

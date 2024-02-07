@@ -42,7 +42,7 @@ const Admin = () => {
       <div
         className="pt-3 pb-5"
         style={{
-          minHeight: "82.2vh",
+          minHeight: "81.7vh",
           backgroundImage: `linear-gradient(${state.colors.light},${state.colors.dark})`,
         }}
       >

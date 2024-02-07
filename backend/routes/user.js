@@ -2,11 +2,13 @@ const express = require("express");
 const { body, validationResult } = require("express-validator");
 const router = express.Router();
 const bcrypt = require("bcrypt");
+const crypto = require("crypto");
 const jwt = require("jsonwebtoken");
 const User = require("../mongooseModels/usersModel");
 const Token = require("../mongooseModels/tokenModel");
 const fetchuser = require("../middleware/fetchuser");
 require("dotenv").config();
+let passwordReset;
 
 router.post(
   "/register",
@@ -39,19 +41,7 @@ router.post(
         password: securedPass,
         date: req.body.date,
       });
-      const data = {
-        user: {
-          id: user.id,
-        },
-      };
-      const authToken = jwt.sign(data, process.env.JWT_SECRET);
-      let singleToken = new Token({
-        userId: data.user.id,
-        authToken: authToken.toString(),
-        createdAt: Date.now(),
-      });
-      await singleToken.save();
-      res.json({ success: true, authToken });
+      res.json({ success: true });
     } catch (err) {
       res.status(500).send({ success: false, error: err });
     }
@@ -84,14 +74,11 @@ router.post(
           .status(400)
           .json({ success: false, error: "Invalid login credentials" });
       }
-      if (req.header("User-Type") === "manager") {
-        if (email !== process.env.REACT_APP_MANAGER_EMAIL) {
-          return res
-            .status(400)
-            .json({ success: false, error: "Invalid login credentials" });
-        }
-      } else if (req.header("User-Type") === "admin") {
-        if (email !== process.env.REACT_APP_ADMIN_EMAIL) {
+      if (req.header("User-Type") === "administrator") {
+        if (
+          email !== process.env.REACT_APP_MANAGER_EMAIL &&
+          email !== process.env.REACT_APP_ADMIN_EMAIL
+        ) {
           return res
             .status(400)
             .json({ success: false, error: "Invalid login credentials" });
@@ -102,8 +89,8 @@ router.post(
           id: user.id,
         },
       };
-      const singleToken = await Token.findOne({ userId: data.user.id });
-      res.json({ success: true, authToken: singleToken.authToken });
+      const authToken = jwt.sign(data, process.env.JWT_SECRET);
+      res.json({ success: true, authToken: authToken });
     } catch (err) {
       res.status(500).send({ success: false, error: err });
     }
@@ -131,26 +118,26 @@ router.post("/verifyUser", async (req, res) => {
         },
       };
       const name = await User.findById(data.user.id).select("name");
-      let singleToken = await Token.findOne({ userId: data.user.id });
-      if (singleToken) {
+      let tokenData = crypto.randomBytes(32).toString("hex");
+      const salt = await bcrypt.genSalt(10);
+      const hash = await bcrypt.hash(tokenData, Number(salt));
+      let tokenExists = await Token.findOne({ userId: data.user.id });
+      if (tokenExists) {
         await Token.deleteOne({ userId: data.user.id });
-        let newToken = jwt.sign(data, process.env.JWT_SECRET);
-        singleToken = new Token({
-          userId: data.user.id,
-          authToken: newToken.toString(),
-          createdAt: Date.now(),
-        });
-        await singleToken.save();
-        const link = `${process.env.FRONTEND_HOST}/passwordReset?token=${newToken}&id=${data.user.id}`;
-        res.json({
-          success: true,
-          email: email,
-          resetLink: link,
-          name: name.name,
-        });
-      } else {
-        res.json({ success: false, error: "Authtoken not found" });
       }
+      await new Token({
+        userId: data.user.id,
+        key: hash.toString(),
+        createdAt: new Date(),
+      }).save();
+      const link = `${process.env.FRONTEND_HOST}/passwordReset?key=${hash}&id=${data.user.id}`;
+      passwordReset = true;
+      res.json({
+        success: true,
+        email: email,
+        resetLink: link,
+        name: name.name,
+      });
     } else {
       res.json({ success: false, error: "User not found" });
     }
@@ -171,16 +158,37 @@ router.put(
     if (!errors.isEmpty()) {
       return res.status(400).json({ success: false, errors: errors.array() });
     }
-    const { id, password } = req.body;
+    const { resetKey, id, password } = req.body;
+    let currentDate = new Date();
+    currentDate = new Date(currentDate.getTime() + 15 * 60000);
     try {
-      const salt = await bcrypt.genSalt(10);
-      let securedPass = await bcrypt.hash(password, salt);
-      await User.findByIdAndUpdate(
-        id,
-        { password: securedPass },
-        { new: true }
-      );
-      res.json({ success: true });
+      if (passwordReset) {
+        let token = await Token.findOne({ userId: id });
+        expiryDate = new Date(token.createdAt.getTime() + 15 * 60000);
+        timeDiff = (currentDate - expiryDate) / 60000;
+        if (timeDiff <= 15) {
+          if (token.key === resetKey) {
+            const salt = await bcrypt.genSalt(10);
+            let securedPass = await bcrypt.hash(password, salt);
+            await User.findByIdAndUpdate(
+              id,
+              { password: securedPass },
+              { new: true }
+            );
+            passwordReset = false;
+            res.json({ success: true });
+          } else {
+            res.json({ success: false, error: "Invalid User" });
+          }
+        } else {
+          res.json({ success: false, error: "The reset link has expired" });
+        }
+      } else {
+        res.json({
+          success: false,
+          error: "The reset link has already been used once",
+        });
+      }
     } catch (err) {
       res.status(500).json({ success: false, error: err });
     }

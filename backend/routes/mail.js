@@ -66,11 +66,8 @@ router.post("/sendPassResetRequest", async (req, res) => {
         console.log("Message sent: %s", info.messageId);
       }
     );
-    const currentDate = new Date();
-    var expiryDate = new Date(currentDate.getTime() + 15 * 60000);
     res.json({
       success: true,
-      expiry: expiryDate.toLocaleString(),
     });
   } catch (err) {
     res.status(500).send({ success: false, error: err });
